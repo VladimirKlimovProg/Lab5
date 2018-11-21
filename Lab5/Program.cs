@@ -82,17 +82,12 @@ namespace Lab5
     {
         static void Main(string[] args)
         {
-            int[] a = null;
             bool exit = false;
-            bool readyToPrint = false;
-            int numberOfAddedElements = 1;
-            int lengthOfNewArr = 0;
-            int[] newArr = new int[9 + numberOfAddedElements];
-            MakeMenu(a, readyToPrint, exit, ref numberOfAddedElements, ref lengthOfNewArr, ref newArr);
+            MakeMenu(exit);
         }
 
-        //Меню
-        private static void MakeMenu(int[] a, bool readyToPrint, bool exit, ref int numberOfAddedElements, ref int lengthOfNewArr, ref int[] newArr)
+        //Главное меню
+        private static void MakeMenu(bool exit)
         {
             do
             {
@@ -101,58 +96,7 @@ namespace Lab5
                 switch (menuItemLevel1)
                 {
                     case 1:
-                        Dialog.PrintMenu2ndLevelArray1D();
-                        int menuItemLevel2 = Dialog.InputNumber("Введите пункт меню", 1, 4);
-                        switch (menuItemLevel2)
-                        {
-                            case 1:
-                                Dialog.PrintMenu3dLevel();
-                                int menuItemLevel3 = Dialog.InputNumber("Введите пункт меню", 1, 3);
-                                switch (menuItemLevel3)
-                                {
-                                    case 1:
-                                        a = MakeArray1DConsoleInput();
-                                        readyToPrint = true;
-                                        break;
-                                    case 2:
-                                        a = MakeArray1DRandomElements();
-                                        readyToPrint = true;
-                                        break;
-                                    default:
-                                        break;
-                                }
-                                break;
-                            case 2:
-                                if (lengthOfNewArr > 0)
-                                {
-                                    PrintArray(newArr, "Одномерный массив");
-                                }
-                                else
-                                {
-                                    PrintArray(a, "Одномерный массив");
-                                }
-                                break;
-                            case 3:
-                                if (a == null)
-                                {
-                                    Console.WriteLine("Необходимо сначала сформировать массив");
-                                    break;
-                                }
-                                if (newArr.Length == 10)
-                                {
-                                    newArr = InsertElement(a, numberOfAddedElements);
-                                }
-                                else
-                                {
-                                    newArr = InsertElement(newArr, numberOfAddedElements);
-                                }
-                                lengthOfNewArr = newArr.Length;
-                                numberOfAddedElements++;
-                                readyToPrint = true;
-                                break;
-                            default:
-                                break;
-                        }
+                        MenuArray();
                         break;
                     case 4:
                         exit = true;
@@ -162,6 +106,68 @@ namespace Lab5
                 }
 
             } while (!exit);
+        }
+
+        //Подменю "Одномерный массив"
+        private static void MenuArray()
+        {
+            int[] a = null;
+            int numberOfAddedElements = 1;
+            int lengthOfNewArr = 0;
+            int[] newArr = new int[9 + numberOfAddedElements];
+            int menuItemLevel2;
+            do
+            {
+                Dialog.PrintMenu2ndLevelArray1D();
+                menuItemLevel2 = Dialog.InputNumber("Введите пункт меню", 1, 4);
+                switch (menuItemLevel2)
+                {
+                    case 1:
+                        Dialog.PrintMenu3dLevel();
+                        int menuItemLevel3 = Dialog.InputNumber("Введите пункт меню", 1, 3);
+                        switch (menuItemLevel3)
+                        {
+                            case 1:
+                                a = MakeArray1DConsoleInput();
+                                newArr = null;
+                                lengthOfNewArr = 0;
+                                break;
+                            case 2:
+                                a = MakeArray1DRandomElements();
+                                newArr = null;
+                                lengthOfNewArr = 0;
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case 2:
+                        if (lengthOfNewArr > 0)
+                        {
+                            PrintArray(newArr, "Одномерный массив");
+                        }
+                        else
+                        {
+                            PrintArray(a, "Одномерный массив");
+                        }
+                        break;
+                    case 3:
+                        if (a == null)
+                        {
+                            Console.WriteLine("Необходимо сначала сформировать массив");
+                            break;
+                        }
+                        newArr = newArr == null || newArr.Length == 10 ? InsertElement(a, numberOfAddedElements) : InsertElement(newArr, numberOfAddedElements);
+                        lengthOfNewArr = newArr.Length;
+                        numberOfAddedElements++;
+                        break;
+                    case 4:
+                        break;
+                    default:
+                        Console.WriteLine("Нет такого пункта меню");
+                        break;
+                }
+            } while (menuItemLevel2 != 4);
         }
 
         //Создание одномерного массива с помощью датчика случайных чисел.
@@ -186,7 +192,7 @@ namespace Lab5
             int[] arr = new int[10];
             for (i = 0; i < 10; i++)
             {
-                arr[i] = Dialog.InputNumber("Введите число", 1, 100);
+                arr[i] = Dialog.InputNumber("Введите число");
             }
             Console.WriteLine("Массив создан");
             return arr;
